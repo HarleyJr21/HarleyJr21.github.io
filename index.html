@@ -14,6 +14,7 @@
 
 <body>
     <canvas id="aurora-canvas"></canvas>
+    <canvas id="snow-canvas"></canvas>
 
     <header>
         <a href="#home" class="logo">Harley</a>
@@ -362,6 +363,10 @@
         </section>
     </div>
 
+    <button id="scroll-top" title="Scroll to top" aria-label="Scroll to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
     <button id="theme-toggle" title="Toggle Light/Dark Mode">
         <i class="fa-solid fa-sun"></i>
     </button>
@@ -532,6 +537,17 @@
             });
         });
 
+        // Scroll to top button
+        const scrollTopButton = document.getElementById('scroll-top');
+
+        window.addEventListener('scroll', () => {
+            scrollTopButton.classList.toggle('visible', window.scrollY > 300);
+        });
+
+        scrollTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         // Light/Dark mode toggle
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = themeToggle.querySelector('i');
@@ -593,6 +609,78 @@
                 box.style.setProperty('--y', y + '%');
             });
         });
+
+        // Pixel snow effect for light mode
+        const snowCanvas = document.getElementById('snow-canvas');
+        const snowCtx = snowCanvas.getContext('2d');
+        let snowPixels = [];
+        const basePixelSize = 4;
+
+        function getSnowDensity() {
+            return Math.max(120, Math.floor(window.innerWidth / 10));
+        }
+
+        function initSnowPixels() {
+            snowPixels = [];
+            const snowDensity = getSnowDensity();
+            for (let i = 0; i < snowDensity; i++) {
+                const depth = Math.random();
+                const size = basePixelSize + Math.floor(depth * 4);
+                snowPixels.push({
+                    x: Math.random() * snowCanvas.width,
+                    y: Math.random() * snowCanvas.height - snowCanvas.height,
+                    vx: (Math.random() - 0.5) * (0.25 + depth * 0.8),
+                    vy: 0.5 + depth * 2,
+                    wobble: Math.random() * Math.PI * 2,
+                    wobbleSpeed: 0.01 + Math.random() * 0.03,
+                    size,
+                    alpha: 0.35 + depth * 0.45
+                });
+            }
+        }
+
+        function resizeSnowCanvas() {
+            snowCanvas.width = window.innerWidth;
+            snowCanvas.height = Math.floor(window.innerHeight * 0.38);
+            initSnowPixels();
+        }
+
+        function drawSnow() {
+            if (!document.body.classList.contains('light-mode')) {
+                snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+                requestAnimationFrame(drawSnow);
+                return;
+            }
+
+            snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+
+            for (let i = 0; i < snowPixels.length; i++) {
+                const pixel = snowPixels[i];
+                pixel.wobble += pixel.wobbleSpeed;
+                pixel.x += pixel.vx + Math.sin(pixel.wobble) * 0.35;
+                pixel.y += pixel.vy;
+
+                if (pixel.y > snowCanvas.height + pixel.size) {
+                    pixel.y = -pixel.size;
+                    pixel.x = Math.random() * snowCanvas.width;
+                }
+
+                if (pixel.x < -pixel.size) {
+                    pixel.x = snowCanvas.width + pixel.size;
+                } else if (pixel.x > snowCanvas.width + pixel.size) {
+                    pixel.x = -pixel.size;
+                }
+
+                snowCtx.fillStyle = `rgba(0, 0, 0, ${pixel.alpha})`;
+                snowCtx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size);
+            }
+
+            requestAnimationFrame(drawSnow);
+        }
+
+        resizeSnowCanvas();
+        window.addEventListener('resize', resizeSnowCanvas);
+        drawSnow();
     </script>
 </body>
 

@@ -32,11 +32,28 @@ body {
     pointer-events: none;
 }
 
+#snow-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 38vh;
+    z-index: 0;
+    pointer-events: none;
+    display: none;
+    overflow: hidden;
+}
+
+body.light-mode #snow-canvas {
+    display: block;
+}
+
 section,
 header,
-#theme-toggle {
+#theme-toggle,
+#scroll-top {
     position: relative;
-    z-index: 1;
+    z-index: 10;
 }
 
 section {
@@ -71,16 +88,23 @@ body.light-mode .contact {
 
 header {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 1rem 9%;
-    background-color: transparent;
+    top: 1.6rem;
+    left: 50%;
+    width: min(calc(100% - 3.2rem), 112rem);
+    padding: 1.2rem 2rem;
+    background: rgba(10, 10, 10, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 4rem;
     z-index: 999;
     transition: 0.4s ease;
+    transform: translateX(-50%);
+    box-shadow: 0 1.2rem 3.5rem rgba(0, 0, 0, 0.32);
 }
 
 .logo {
@@ -98,11 +122,17 @@ header {
 nav a {
     font-size: 1.8rem;
     color: white;
-    margin-left: 4rem;
+    margin-left: 0;
     font-weight: 500;
     transition: color 0.3s ease;
     position: relative;
     border-bottom: none;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
 }
 
 nav a::after {
@@ -143,6 +173,12 @@ body.light-mode nav a.active {
 }
 
 @media(max-width: 995px) {
+    header {
+        width: calc(100% - 2rem);
+        padding: 1rem 1.4rem;
+        gap: 2rem;
+    }
+
     nav {
         position: absolute;
         display: none;
@@ -456,11 +492,9 @@ body.light-mode .icon-text {
 }
 
 header.scrolled {
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.62);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 1.6rem 3.8rem rgba(0, 0, 0, 0.48);
     transition: 0.4s ease;
 }
 
@@ -498,9 +532,9 @@ header.scrolled {
 }
 
 /* Dark mode button */
-#theme-toggle {
+#theme-toggle,
+#scroll-top {
     position: fixed;
-    bottom: 2rem;
     right: 2rem;
     width: 5rem;
     height: 5rem;
@@ -518,7 +552,30 @@ header.scrolled {
     align-items: center;
 }
 
+#theme-toggle {
+    bottom: 2rem;
+}
+
+#scroll-top {
+    bottom: 8rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(1rem) scale(0.95);
+}
+
+#scroll-top.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
 #theme-toggle i {
+    color: white;
+}
+
+#scroll-top i {
     color: white;
 }
 
@@ -527,13 +584,25 @@ header.scrolled {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
 }
 
+#scroll-top:hover {
+    transform: translateY(0) scale(1.15);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+}
+
 body.light-mode header {
-    background-color: transparent;
+    background: rgba(255, 255, 255, 0.56);
+    border-color: rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode header.scrolled {
     background-color: rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 1.4rem 3.4rem rgba(0, 0, 0, 0.1);
 }
 
 body.light-mode .logo {
@@ -600,7 +669,22 @@ body.light-mode #theme-toggle i {
     color: black;
 }
 
+body.light-mode #scroll-top {
+    background-color: #eeff00;
+    color: black;
+    border: 1.5px solid black;
+    box-shadow: 0 0 15px rgba(238, 255, 0, 0.5);
+}
+
+body.light-mode #scroll-top i {
+    color: black;
+}
+
 body.light-mode #theme-toggle:hover {
+    box-shadow: 0 0 25px rgba(238, 255, 0, 0.8);
+}
+
+body.light-mode #scroll-top:hover {
     box-shadow: 0 0 25px rgba(238, 255, 0, 0.8);
 }
 
